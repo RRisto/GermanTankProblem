@@ -1,9 +1,10 @@
 source("helpers.R")
 library("ggplot2")
-#library("plyr")
 library("dplyr")
 library("shiny")
 library("reshape2")
+library("scales")
+
 shinyServer(function(input, output) {
     dataInput<- reactive({
         #if sample size is bigger than min production range,
@@ -17,7 +18,8 @@ shinyServer(function(input, output) {
             )
         simulation(min=input$production[1],
                    max= input$production[2],
-                   n=input$num)
+                   n=input$num,
+                   margin=input$margin)
     })
     models= reactive({
         as.list(input$checkGroup)
@@ -40,15 +42,26 @@ shinyServer(function(input, output) {
     })
     #residuals plot
     output$resids.plot <- renderPlot({
-        ggplot(data.sub(), aes(x=real, y=resids))+
+        ggplot(data.sub(), aes(x=real, y=resids.percent))+
             geom_jitter(aes(color=variable), alpha=0.5)+
             geom_abline(intercept = 0, slope=0)+
-            ylab("Guess - true number of tanks")+
+            ylab("Residuals (difference from actual production)")+
+            scale_y_continuous(labels=percent)+
             xlab("Actual number of tanks produced")+
             scale_colour_discrete(name="Model")+
-            #ggtitle("Residuals")+
             theme_minimal()+
             theme(plot.title = element_text(size=20,lineheight=.8, face="bold"))
     })
-    output$residuals <- renderTable({ resids(data.sub()) })
+    output$residuals <- renderTable({ resids(data.sub()) 
+    })
+    
+    output$histogram.plot <- renderPlot({ 
+        ggplot(data.sub(), aes(x=resids.percent, colour=variable)) + 
+            geom_density()+
+            geom_vline(xintercept = 0)+
+            scale_colour_discrete(name="Model")+
+            scale_x_continuous(labels=percent)+
+            xlab("Residuals (difference from actual production)")+
+            theme_minimal() 
+    })
 })

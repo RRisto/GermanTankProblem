@@ -1,4 +1,4 @@
-simulation <- function(min=10, max=100, n=10){
+simulation <- function(min=100, max=110, n=5, margin=5){
     real=c()
     third.guess=data.frame(NULL)
     initial.guess=data.frame(NULL)
@@ -21,7 +21,7 @@ simulation <- function(min=10, max=100, n=10){
             #randomly n samples
             third.guess[i-minminus,j] = thirdModel(observeds)
             initial.guess[i-minminus,j]=max(observeds)
-            second.guess[i-minminus,j]=max(observeds)*1.05
+            second.guess[i-minminus,j]=max(observeds)*(1+(margin/100))
             resids1[i-minminus,j] =initial.guess[i-minminus,j]-trueTop
             resids2[i-minminus,j] =second.guess[i-minminus,j]-trueTop
             resids3[i-minminus,j] =third.guess[i-minminus,j]-trueTop
@@ -46,19 +46,17 @@ simulation <- function(min=10, max=100, n=10){
     data.resids=rbind(resids1, resids2, resids3)
     #add resids to initial table
     data.guess$resids=data.resids$value
+    #calculate residulas as percent
+    data.guess=mutate(data.guess, resids.percent=(resids/real))
     return(data.guess)
 }
 #function for creating residuals summary table
 resids=function(data){
-#     summary=ddply(data, "variable", summarize,
-#                   Mean=mean(resids),
-#                   Median=median(resids),
-#                   Sum=sum(resids))
-    summary=group_by(data, variable)
-    summary=summarise(summary,
-                      Mean=mean(resids),
-                      Median=median(resids),
-                      Sum=sum(resids))
+    summary=data %>%
+        group_by(variable) %>%
+        summarise(Mean=mean(resids.percent*100),
+                  Median=median(resids.percent*100),
+                  Sd=sd(resids.percent*100))
     names(summary)[1]="Model"
     summary
 }
