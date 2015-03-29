@@ -1,4 +1,5 @@
 simulation <- function(min=100, max=110, n=5, margin=5){
+    set.seed(500)
     real=c()
     third.guess=data.frame(NULL)
     initial.guess=data.frame(NULL)
