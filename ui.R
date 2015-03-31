@@ -29,27 +29,28 @@ shinyUI(shinyUI(
                                              (all tanks have sequential serial number). This application simulates three models
                                              which try to guess number of tanks produced:"),
                                            tags$div( HTML( "<ol>
-                                                           <li><b>model 1</b>, a simple model where highest sequential
-                                                           number captured is guessed to be total tank production,</li>
-                                                           <li><b>model 2</b>, a bit more complex model where margin is added to
-                                                           model 1 (margin is adjustable from input panel),</li>
+                                                           <li><b>model 1</b>, highest serial number captured = 
+                                                            actual tank production,</li>
+                                                           <li><b>model 2</b>, model 1 answer +(model 1 answer x margin) = 
+                                                            actual tank production,</li>
                                                            <li><b>model 3</b>, most complex model which uses formula
                                                            originally used by allies:</li>
                                                            </ol>" )),
-                                           p(withMathJax("$$max + \\frac{max}{n} - 1$$")),
+                                           p(withMathJax("$$actual\\ tank\\ production\\ = max + \\frac{max}{n} - 1$$")),
                                            tags$div(HTML( "
                                                           <p>Where:</p>
                                                           <ul>
                                                           <li>max is maximum serial number captured</li>
                                                           <li>n is number of tanks captured</li>
                                                           </ul>" )),
-                                           p("Application let's you to change  inputs (different number of tanks
-                                             captured, different tanks production ranges, margin for second model). First 
-                                             plot shows 10 guesses per model per each number of tanks in production range. 
+                                           p("You can change  inputs (different number of tanks
+                                             captured, different tank production ranges, margin for second model). First 
+                                             plot shows 10 guesses per model per each number of tanks in actual production
+                                            range. 
                                              To evaluate accuracy of models residuals are plotted, summary statisticas are 
                                              calculated and histogram of residuals is made."),
                                            tags$b("Residuals are presented in percent:
-                                                  (number of tanks guessed by model - true production)/true production*100."),
+                                                  (production guessed by model - true production)/true production x 100."),
                                            p("This kind of simulation could be used solving other problems where
                                              population size must be guessed based on sequential serial numbers captured. 
                                              Have a nice tank hunt!"),

@@ -1,4 +1,4 @@
-This shiny app is for simulating different answers for german tank problem. 
+This shiny app is for simulating and comparing different answers for German Tank Problem. 
 
 - App is here: https://ristohinno.shinyapps.io/GermanTankProblem/
 
