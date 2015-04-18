@@ -69,9 +69,9 @@ shinyUI(shinyUI(
                                                       plotOutput("resids.plot")
                                                ),
                                                column(6, 
-                                                      h3("Summary of residuals"),
-                                                      p("(% difference from actual production)"),
-                                                      tableOutput("residuals")),
+                                                      h3("Summary of residuals", align="center"),
+                                                      p("(% difference from actual production)", align="center"),
+                                                      tableOutput("residuals"), align="center"),
                                                column(6,   
                                                       h3("Residuals histogram", align="center"),
                                                       plotOutput("histogram.plot"))
