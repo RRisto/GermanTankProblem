@@ -3,3 +3,4 @@
 #got it from Winston Chang: 
 #https://github.com/rstudio/webinars/blob/master/2015-04/activity-dashboard/dep.R
 library(Cairo)
+#this is not needed at the moment, but I'll keep it for remainder
