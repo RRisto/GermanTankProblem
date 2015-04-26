@@ -60,21 +60,22 @@ shinyUI(shinyUI(
                                            ),
                                   tabPanel("Simulation",
                                            fluidRow(
-                                               column(6,
+                                               column(10,
                                                       h3("Tank production vs guess", align="center"),
-                                                      plotOutput("guess.plot")
+                                                      graphOutput("guess.plot")
                                                ),
-                                               column(6,
+                                               column(10,
                                                       h3("Residuals", align="center"),
-                                                      plotOutput("resids.plot")
+                                                      graphOutput("resids.plot")
                                                ),
+                                                column(10,   
+                                                      h3("Residuals histogram", align="center"),
+                                                      #plotOutput("histogram.plot"))
+                                                      graphOutput("trendPlot")),
                                                column(6, 
                                                       h3("Summary of residuals", align="center"),
                                                       p("(% difference from actual production)", align="center"),
-                                                      tableOutput("residuals"), align="center"),
-                                               column(6,   
-                                                      h3("Residuals histogram", align="center"),
-                                                      plotOutput("histogram.plot"))
+                                                      tableOutput("residuals"), align="center")
                                            )
                                   )
                                            ) ) ) ) ) )

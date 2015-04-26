@@ -3,6 +3,7 @@ library("ggplot2")
 library("dplyr")
 library("shiny")
 library("reshape2")
+library("ggthemes")
 library("scales")
 
 shinyServer(function(input, output) {
@@ -28,40 +29,86 @@ shinyServer(function(input, output) {
         subset(dataInput(), variable %in% models())
     })
     #first plot
-    output$guess.plot <- renderPlot({
-        ggplot(data.sub(), aes(x=real, y=value))+
-            geom_jitter(aes(color=variable), alpha=0.5)+
+    output$guess.plot <- renderGraph({
+        guesses=ggplot(data.sub(), aes(x=real, y=value))+
+            geom_point(position = position_jitter(),aes(color=variable), alpha=0.5)+
             geom_abline(intercept = 0, slope=1)+
             ylab("Guess")+
             xlab("Actual number of tanks produced")+
             scale_colour_discrete(name="Model")+
-            #ggtitle("Tank production vs guess")+
-            theme_minimal()+
-            theme(legend.position="none")+
-            theme(plot.title = element_text(size=20,lineheight=.8, face="bold"))
+            theme_minimal()
+        
+        #code for plotly
+        #This grabs data and layout information from the ggplot
+        gg<- gg2fig(guesses)
+        
+        gg$layout$showlegend <- TRUE # show the legend
+        
+        # Send this message up to the browser client, which will get fed through to
+        # Plotly's javascript graphing library embedded inside the graph
+        return(list(
+            list(
+                id="guess.plot",
+                task="newPlot",
+                data=gg$data,
+                layout=gg$layout
+            )
+        ))
+        ##end of the code for plotly
     })
     #residuals plot
-    output$resids.plot <- renderPlot({
-        ggplot(data.sub(), aes(x=real, y=resids.percent))+
-            geom_jitter(aes(color=variable), alpha=0.5)+
-            geom_abline(intercept = 0, slope=0)+
-            ylab("Residuals (difference from actual production)")+
-            scale_y_continuous(labels=percent)+
-            xlab("Actual number of tanks produced")+
-            scale_colour_discrete(name="Model")+
-            theme_minimal()+
-            theme(plot.title = element_text(size=20,lineheight=.8, face="bold"))
+    output$resids.plot <- renderGraph({
+        resids=ggplot(data.sub(), aes(x=real, y=Model))+
+            geom_point(position = position_jitter(),aes(color=variable), alpha=0.5)+
+             geom_abline(intercept = 0, slope=0)+
+             ylab("Residuals (% difference from actual production)")+
+             xlab("Actual number of tanks produced")+
+             theme_minimal()
+        
+        #code for plotly
+        #This grabs data and layout information from the ggplot
+        gg<- gg2fig(resids)
+        
+        gg$layout$showlegend <- TRUE # show the legend
+        
+        # Send this message up to the browser client, which will get fed through to
+        # Plotly's javascript graphing library embedded inside the graph
+        return(list(
+            list(
+                id="resids.plot",
+                task="newPlot",
+                data=gg$data,
+                layout=gg$layout
+            )
+        ))
+        ##end of the code for plotly
     })
     output$residuals <- renderTable({ resids(data.sub()) 
     })
-    
-    output$histogram.plot <- renderPlot({ 
-        ggplot(data.sub(), aes(x=resids.percent, colour=variable)) + 
-            geom_density()+
-            geom_vline(xintercept = 0)+
-            scale_colour_discrete(name="Model")+
-            scale_x_continuous(labels=percent)+
-            xlab("Residuals (difference from actual production)")+
-            theme_minimal() 
+    #output$histogram.plot <- renderPlot({ 
+    output$trendPlot <- renderGraph({ 
+        
+        ggideal_point<-ggplot(data.sub(), aes(x=Model, colour=variable)) + 
+            geom_density(trim=TRUE)+
+            xlab("Residuals (% difference from actual production)")+
+            theme_minimal()+
+            geom_vline(aes(xintercept = 0))
+        
+        #code for plotly
+        #This grabs data and layout information from the ggplot
+        gg<- gg2fig(ggideal_point)
+        gg$layout$showlegend <- TRUE # show the legend
+        
+        # Send this message up to the browser client, which will get fed through to
+        # Plotly's javascript graphing library embedded inside the graph
+        return(list(
+            list(
+                id="trendPlot",
+                task="newPlot",
+                data=gg$data,
+                layout=gg$layout
+            )
+        ))
+        ##end of the code for plotly
     })
 })

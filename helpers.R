@@ -48,16 +48,19 @@ simulation <- function(min=100, max=110, n=5, margin=5){
     #add resids to initial table
     data.guess$resids=data.resids$value
     #calculate residulas as percent
-    data.guess=mutate(data.guess, resids.percent=(resids/real))
+    data.guess=mutate(data.guess, resids.percent=(resids/real*100))
+    names(data.guess)[5]="Model" #kinda stupid, but need it for plotly,
+    #for unknow reason cannot rename legend title from ggplot for histogram
     return(data.guess)
 }
 #function for creating residuals summary table
 resids=function(data){
     summary=data %>%
         group_by(variable) %>%
-        summarise(Mean=mean(resids.percent*100),
-                  Median=median(resids.percent*100),
-                  Sd=sd(resids.percent*100))
+        #summarise(Mean=mean(resids.percent*100),
+        summarise(Mean=mean(Model),
+                  Median=median(Model),
+                  Sd=sd(Model))
     names(summary)[1]="Model"
     summary
 }
