@@ -4,7 +4,8 @@ library("dplyr")
 library("shiny")
 library("reshape2")
 library("ggthemes")
-library("scales")
+#library("scales")
+library("e1071") #for skweness 
 
 shinyServer(function(input, output) {
     dataInput<- reactive({
@@ -83,9 +84,7 @@ shinyServer(function(input, output) {
         ))
         ##end of the code for plotly
     })
-    output$residuals <- renderTable({ resids(data.sub()) 
-    })
-    #output$histogram.plot <- renderPlot({ 
+
     output$trendPlot <- renderGraph({ 
         
         ggideal_point<-ggplot(data.sub(), aes(x=Model, colour=variable)) + 
@@ -110,5 +109,39 @@ shinyServer(function(input, output) {
             )
         ))
         ##end of the code for plotly
+    })
+    
+    #     output$residuals <- renderTable({ resids(data.sub()) 
+    #     })
+    
+    output$residsBox <- renderGraph({
+        
+        residsBoxPlot<-ggplot(data.sub(), aes(x=factor(variable), y=Model))+
+            geom_boxplot(aes(fill=factor(variable)))+
+            coord_flip()+
+            ylab("Residuals (% difference from actual production)")+
+            xlab("")+
+            theme_minimal()+
+            theme(legend.position="none", 
+                  axis.ticks = element_blank(), axis.text.x = element_blank())
+        
+        #code for plotly
+        #This grabs data and layout information from the ggplot
+        gg<- gg2fig(residsBoxPlot)
+        
+        gg$layout$showlegend <- TRUE # show the legend
+        
+        # Send this message up to the browser client, which will get fed through to
+        # Plotly's javascript graphing library embedded inside the graph
+        return(list(
+            list(
+                id="residsBox",
+                task="newPlot",
+                data=gg$data,
+                layout=gg$layout
+            )
+        ))
+        ##end of the code for plotly
+        
     })
 })

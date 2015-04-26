@@ -43,39 +43,33 @@ shinyUI(shinyUI(
                                                           <li>max is maximum serial number captured</li>
                                                           <li>n is number of tanks captured</li>
                                                           </ul>" )),
-                                           p("You can change  inputs (different number of tanks
-                                             captured, different tank production ranges, margin for second model). First 
-                                             plot shows 10 guesses per model per each number of tanks in actual production
-                                            range. 
-                                             To evaluate accuracy of models residuals are plotted, summary statisticas are 
-                                             calculated and histogram of residuals is made."),
+                                           p("You can change  inputs (number of tanks
+                                             captured, tank production range, margin for second model).  
+                                                App simulates 10 guesses per model for each tank in actual prodcution range.
+                                             To evaluate accuracy residuals are plotted."),
                                            tags$b("Residuals are presented in percent:
                                                   (production guessed by model - true production)/true production x 100."),
-                                           p("This kind of simulation could be used solving other problems where
-                                             population size must be guessed based on sequential serial numbers captured. 
-                                             Have a nice tank hunt!"),
                                            p("NB! As production range and sample size increases application might become
                                              slower."),
                                            img(src="tanks.jpg", height = 100, width = 150)
                                            ),
                                   tabPanel("Simulation",
                                            fluidRow(
-                                               column(10,
-                                                      h3("Tank production vs guess", align="center"),
+                                               column(12,
+                                                      h3("Actual tank production vs guess", align="center"),
                                                       graphOutput("guess.plot")
                                                ),
-                                               column(10,
+                                               column(12,
                                                       h3("Residuals", align="center"),
                                                       graphOutput("resids.plot")
                                                ),
-                                                column(10,   
+                                                column(12,   
                                                       h3("Residuals histogram", align="center"),
-                                                      #plotOutput("histogram.plot"))
-                                                      graphOutput("trendPlot")),
-                                               column(6, 
-                                                      h3("Summary of residuals", align="center"),
-                                                      p("(% difference from actual production)", align="center"),
-                                                      tableOutput("residuals"), align="center")
+                                                      graphOutput("trendPlot")
+                                                      ),
+                                               column(12, 
+                                                      h3("Residuals boxplot", align="center"),
+                                                      graphOutput("residsBox"))
                                            )
                                   )
                                            ) ) ) ) ) )
